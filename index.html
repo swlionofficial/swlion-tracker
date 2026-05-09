@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="SW..LION release tracker — все 7 платформ, 8 синглов">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SW..LION">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<title>SW..LION · Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a; --bg-elev:#131313; --border:#1f1f1f; --border-strong:#2a2a2a;
+  --text:#fafafa; --text-muted:#888; --text-faint:#555;
+  --accent:#d97706; --accent-soft:rgba(217,119,6,0.14);
+  --serif:'Spectral', Georgia, serif;
+  --mono:'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html{background:var(--bg);}
+body{
+  font-family:var(--mono);
+  background:var(--bg); color:var(--text);
+  min-height:100vh; min-height:100dvh;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  max-width:520px; margin:0 auto;
+  font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+.container{padding:32px 22px 60px;}
+
+.hero{margin-bottom:32px; padding-top:8px; animation:fadeUp 0.7s ease-out;}
+.hero-title{
+  font-family:var(--serif); font-style:italic; font-weight:300;
+  font-size:54px; line-height:0.95; letter-spacing:-0.02em;
+  margin-bottom:14px; color:var(--text);
+}
+.hero-tagline{
+  font-family:var(--mono); font-size:10px; font-weight:400;
+  letter-spacing:0.22em; text-transform:uppercase; color:var(--text-muted);
+}
+
+.stats{
+  display:flex; gap:18px; flex-wrap:wrap;
+  margin-top:22px; padding:14px 0;
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  font-family:var(--mono); font-size:10px; font-weight:400;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint);
+  animation:fadeUp 0.7s ease-out 0.08s backwards;
+}
+.stats span strong{color:var(--text); font-weight:500;}
+
+.refresh, .install-btn{
+  width:100%; padding:15px; margin-bottom:16px;
+  background:transparent; color:var(--text);
+  border:1px solid var(--border-strong); border-radius:10px;
+  font-family:var(--mono); font-size:11px; font-weight:500;
+  letter-spacing:0.18em; text-transform:uppercase;
+  cursor:pointer; transition:all 0.15s ease;
+}
+.refresh{margin-top:24px; animation:fadeUp 0.7s ease-out 0.18s backwards;}
+.refresh:active, .install-btn:active{
+  background:var(--accent-soft); border-color:var(--accent); color:var(--accent);
+  transform:scale(0.99);
+}
+.install-btn{
+  display:none;
+  background:var(--accent-soft); color:var(--accent); border-color:var(--accent);
+  margin-bottom:32px;
+}
+.install-btn.show{display:block;}
+
+.section-label{
+  font-family:var(--mono); font-size:10px; font-weight:400;
+  letter-spacing:0.22em; text-transform:uppercase; color:var(--text-faint);
+  margin:16px 0 14px; padding-left:2px;
+}
+
+.latest{
+  position:relative;
+  border:1px solid var(--border-strong); border-radius:14px;
+  overflow:hidden; margin-bottom:36px;
+  background:var(--bg-elev);
+  animation:fadeUp 0.7s ease-out 0.28s backwards;
+}
+.latest-cover{
+  width:100%; aspect-ratio:1; display:block;
+  background:var(--bg-elev); object-fit:cover;
+}
+.latest-info{padding:18px 20px 20px;}
+.latest-badge{
+  display:inline-block; padding:3px 9px;
+  background:var(--accent-soft); color:var(--accent);
+  font-family:var(--mono); font-size:9px; font-weight:500;
+  letter-spacing:0.2em; text-transform:uppercase;
+  border-radius:3px; margin-bottom:12px;
+}
+.latest-title{
+  font-family:var(--serif); font-style:italic; font-weight:400;
+  font-size:26px; line-height:1.15; letter-spacing:-0.01em;
+  margin-bottom:6px; color:var(--text);
+}
+.latest-meta{
+  font-family:var(--mono); font-size:10px; font-weight:400;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-faint); margin-bottom:16px;
+}
+
+.platforms{display:flex; flex-wrap:wrap; gap:6px;}
+.pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:38px; height:30px; padding:0 11px;
+  border:1px solid var(--border-strong); border-radius:6px;
+  font-family:var(--mono); font-size:10px; font-weight:500;
+  letter-spacing:0.06em; color:var(--text-muted);
+  text-decoration:none; transition:all 0.15s ease;
+  background:transparent;
+}
+.pill:hover, .pill:active{
+  background:var(--accent-soft); color:var(--accent); border-color:var(--accent);
+}
+
+.releases{margin-bottom:8px;}
+.release{
+  display:grid; grid-template-columns:60px 1fr; gap:14px;
+  padding:16px 0; border-bottom:1px solid var(--border);
+  animation:fadeUp 0.55s ease-out backwards;
+}
+.release:last-child{border-bottom:none;}
+.release-cover{
+  width:60px; height:60px; border-radius:5px;
+  background:var(--bg-elev); display:block; object-fit:cover;
+}
+.release-info{min-width:0;}
+.release-title{
+  font-family:var(--serif); font-style:italic; font-weight:400;
+  font-size:17px; line-height:1.2;
+  margin-bottom:4px; color:var(--text);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.release-meta{
+  font-family:var(--mono); font-size:9.5px; font-weight:400;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-faint); margin-bottom:8px;
+}
+.release .pill{min-width:28px; height:23px; padding:0 6px; font-size:9px;}
+
+.release:nth-child(1){animation-delay:0.32s;}
+.release:nth-child(2){animation-delay:0.36s;}
+.release:nth-child(3){animation-delay:0.4s;}
+.release:nth-child(4){animation-delay:0.44s;}
+.release:nth-child(5){animation-delay:0.48s;}
+.release:nth-child(6){animation-delay:0.52s;}
+.release:nth-child(7){animation-delay:0.56s;}
+
+.install-hint{
+  margin-top:32px; padding:16px 18px;
+  background:var(--bg-elev); border:1px solid var(--border); border-radius:10px;
+  font-family:var(--mono); font-size:11px; font-weight:300;
+  color:var(--text-muted); line-height:1.7; letter-spacing:0.02em;
+}
+.install-hint strong{color:var(--text); font-weight:500;}
+
+.footer{
+  margin-top:32px; padding-top:24px;
+  border-top:1px solid var(--border);
+  font-family:var(--mono); font-size:10px; font-weight:300;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-faint); line-height:2;
+}
+.footer-block{margin-bottom:16px;}
+.footer-block strong{color:var(--text-muted); font-weight:500;}
+.footer a{color:var(--text-muted); text-decoration:none;}
+.footer a:active{color:var(--accent);}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(8px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+@media (display-mode: standalone){
+  .install-hint{display:none;}
+  .install-btn{display:none !important;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="hero">
+    <h1 class="hero-title">SW..LION</h1>
+    <div class="hero-tagline">Human Depth · Digital Architecture</div>
+    <div class="stats">
+      <span><strong>10</strong> Singles</span>
+      <span><strong>7</strong> Platforms</span>
+      <span>Since <strong>Feb 11</strong></span>
+    </div>
+  </header>
+
+  <button class="install-btn" id="installBtn">Install App</button>
+
+  <button class="refresh" onclick="window.open('https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act','_blank')">
+    Open Spotify · Check New
+  </button>
+
+  <div class="section-label">Latest Release</div>
+  <article class="latest">
+    <img class="latest-cover" src="https://i.scdn.co/image/ab67616d0000b27392b84edc05b88f50d17b36ef" alt="">
+    <div class="latest-info">
+      <div class="latest-badge">May 7 · 2026 · NEW</div>
+      <h2 class="latest-title">The lost</h2>
+      <div class="latest-meta">Single · 3:32</div>
+      <div class="platforms">
+        <a class="pill" href="https://open.spotify.com/album/6O2GOJ02pIeGbYnhuOKNUF">SP</a>
+        <a class="pill" href="https://music.apple.com/us/artist/sw-lion/1876097912">AM</a>
+        <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+        <a class="pill" href="https://www.deezer.com/en/artist/372829941">DZ</a>
+        <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+        <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+        <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+      </div>
+    </div>
+  </article>
+
+  <div class="section-label">All Releases</div>
+  <div class="releases">
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e025267011f7d0e680209b0aa83" alt="">
+      <div class="release-info">
+        <div class="release-title">Aurelion</div>
+        <div class="release-meta">May 2 · 3:36</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/5mygsIoAl22IhMkst9Vcwt">SP</a>
+          <a class="pill" href="https://music.apple.com/us/artist/sw-lion/1876097912">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/artist/372829941">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e028ea8d75449470380ece731dc" alt="">
+      <div class="release-info">
+        <div class="release-title">Зажигаем звезды</div>
+        <div class="release-meta">Apr 23 · 3:18</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/5n8BjCe1z71ZkEAXj8iZoT">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/%D0%B7%D0%B0%D0%B6%D0%B8%D0%B3%D0%B0%D0%B5%D0%BC-%D0%B7%D0%B2%D0%B5%D0%B7%D0%B4%D1%8B-single/1895899277">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/967644121">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e026a13a71ffe0822ed85338bd5" alt="">
+      <div class="release-info">
+        <div class="release-title">Letter</div>
+        <div class="release-meta">Apr 22 · 3:28</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/2KZDgsjnJ8Y8k10xzKhjgp">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/letter-single/1895842444">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/967225021">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e028fd3dc99c49d44f319592094" alt="">
+      <div class="release-info">
+        <div class="release-title">Письмо с нами</div>
+        <div class="release-meta">Apr 17 · 2:54</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/1NOxr2NpAxdT0vuRrtK0uY">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D0%BE-%D1%81-%D0%BD%D0%B0%D0%BC%D0%B8-single/1895327469">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/963360591">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e02fa3f9a2db2f4b7e5c5e1ca12" alt="">
+      <div class="release-info">
+        <div class="release-title">Two Points on Map</div>
+        <div class="release-meta">Apr 7 · 3:54</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/3CDFb2prKkQB648jOjpE6C">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/two-points-on-map-single/1893344660">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/956214691">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e027c0e616eca4ab3d3b885528c" alt="">
+      <div class="release-info">
+        <div class="release-title">Mask of Fire</div>
+        <div class="release-meta">Mar 30 · 3:54</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/3CSomkyK1K6N8RMFZ7FusA">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/mask-of-fire-single/1890975784">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/950303361">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e02a4b3e0a3a1cecd502807749d" alt="">
+      <div class="release-info">
+        <div class="release-title">В каждом слове гимн</div>
+        <div class="release-meta">Mar 25 · 3:19</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/2gwz1eB2AN79VdWqr56kRC">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/%D0%B2-%D0%BA%D0%B0%D0%B6%D0%B4%D0%BE%D0%BC-%D1%81%D0%BB%D0%BE%D0%B2%D0%B5-%D0%B3%D0%B8%D0%BC%D0%BD-single/1889785111">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/947000361">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e025e13ebcfdbd8f165456d82cb" alt="">
+      <div class="release-info">
+        <div class="release-title">Don't Look Away</div>
+        <div class="release-meta">Mar 10 · 3:31</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/6Epm4XbXrsIdPRafQoWrzZ">SP</a>
+          <a class="pill" href="https://music.apple.com/us/album/dont-look-away-single/1881905702">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/930480711">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <img class="release-cover" src="https://i.scdn.co/image/ab67616d00001e02ef535e1aeb73bdbc132848c4" alt="">
+      <div class="release-info">
+        <div class="release-title">Не отводи свой взгляд</div>
+        <div class="release-meta">Feb 11 · 2:25 · Debut</div>
+        <div class="platforms">
+          <a class="pill" href="https://open.spotify.com/album/5FPV1SL6xFg0y2AdQJbpFP">SP</a>
+          <a class="pill" href="https://music.apple.com/us/artist/sw-lion/1876097912">AM</a>
+          <a class="pill" href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YT</a>
+          <a class="pill" href="https://www.deezer.com/en/album/917024991">DZ</a>
+          <a class="pill" href="https://tidal.com/artist/74357183/u">TD</a>
+          <a class="pill" href="https://music.yandex.ru/artist/25564087">YA</a>
+          <a class="pill" href="https://vk.ru/artist/6937135904079804585">VK</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="install-hint">
+    <strong>iOS Safari:</strong> Share → Add to Home Screen<br>
+    <strong>Android Chrome:</strong> Menu (⋮) → Install app
+  </div>
+
+  <footer class="footer">
+    <div class="footer-block">
+      <strong>Project</strong><br>
+      Sergey Pronin · Self-released<br>
+      SW..LION Publishing<br>
+      Active since 11 Feb 2026
+    </div>
+    <div class="footer-block">
+      <strong>Profiles</strong><br>
+      <a href="https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act">Spotify</a> ·
+      <a href="https://music.apple.com/us/artist/sw-lion/1876097912">Apple</a> ·
+      <a href="https://music.youtube.com/channel/UC4dRl3sUa19Ajrx6g-1Ca_Q">YouTube</a> ·
+      <a href="https://www.deezer.com/en/artist/372829941">Deezer</a> ·
+      <a href="https://tidal.com/artist/74357183/u">Tidal</a> ·
+      <a href="https://music.yandex.ru/artist/25564087">Yandex</a> ·
+      <a href="https://vk.ru/artist/6937135904079804585">VK</a>
+    </div>
+    <div class="footer-block">
+      <strong>Snapshot</strong> · 9 May 2026 · v1.2
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// Service Worker registration for offline support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .catch((err) => console.log('SW registration failed:', err));
+  });
+}
+
+// Android install prompt (Chrome / Edge)
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.classList.add('show');
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    installBtn.classList.remove('show');
+  }
+  deferredPrompt = null;
+});
+
+window.addEventListener('appinstalled', () => {
+  installBtn.classList.remove('show');
+  deferredPrompt = null;
+});
+</script>
+</body>
+</html>
