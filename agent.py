@@ -66,14 +66,13 @@ def fetch_artist_catalog(token: str) -> list[dict]:
     items: list[dict] = []
     url = (
         f"https://api.spotify.com/v1/artists/{ARTIST_ID}/albums"
-        "?include_groups=single,album&limit=50"
+        "?include_groups=single,album&limit=20"
     )
     while url:
         r = requests.get(url, headers=headers, timeout=10)
         if not r.ok:
             print(f"  ! Spotify {r.status_code} on {url}")
             print(f"  ! Response body: {r.text}")
-            print(f"  ! Auth header starts with: Bearer {token[:20]}...")
         r.raise_for_status()
         data = r.json()
         items.extend(data["items"])
