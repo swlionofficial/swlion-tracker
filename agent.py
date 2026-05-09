@@ -1,15 +1,12 @@
 """
-SW..LION Release Agent
-======================
-Runs on GitHub Actions every hour.
-1. Fetches SW..LION's full catalog from Spotify Web API.
-2. Compares with releases.json (last known state).
-3. For any new release: posts to Telegram channel + updates index.html.
-4. Commits changes back to the repo so Netlify auto-redeploys.
+SW..LION Release Agent v2 (HTML scraping)
+==========================================
+Scrapes open.spotify.com directly instead of using the Web API.
+- No Spotify Developer App needed (no Client ID / Secret).
+- More resilient to API changes.
+- Same logic as v1: detect new albums, post to Telegram, update PWA.
 
-Environment variables required (set as GitHub Secrets):
-    SPOTIFY_CLIENT_ID
-    SPOTIFY_CLIENT_SECRET
+Required GitHub secret:
     TELEGRAM_BOT_TOKEN
 """
 
@@ -17,21 +14,23 @@ import json
 import os
 import re
 import sys
-from datetime import date, datetime
+import time
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import requests
 
 # --- Configuration -----------------------------------------------------------
 
-ARTIST_ID = "24zGJwyyCrVEqfvQKC8Act"  # SW..LION on Spotify
+ARTIST_ID = "24zGJwyyCrVEqfvQKC8Act"
+ARTIST_URL = f"https://open.spotify.com/artist/{ARTIST_ID}"
+ALBUM_URL_PREFIX = "https://open.spotify.com/album/"
 TELEGRAM_CHAT = "@swlionofficial"
 
 REPO_ROOT = Path(__file__).parent
 RELEASES_FILE = REPO_ROOT / "releases.json"
 INDEX_FILE = REPO_ROOT / "index.html"
 
-# Profile links — used in every Telegram post and as fallbacks in PWA
 PROFILES = {
     "spotify": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
     "apple": "https://music.apple.com/us/artist/sw-lion/1876097912",
@@ -42,110 +41,84 @@ PROFILES = {
     "vk": "https://vk.ru/artist/6937135904079804585",
 }
 
+# Spotify rejects requests without a real-looking User-Agent
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+}
 
-# --- Spotify API -------------------------------------------------------------
 
-def get_spotify_token() -> str:
-    """Get an app-level access token via Client Credentials flow."""
-    client_id = os.environ["SPOTIFY_CLIENT_ID"]
-    client_secret = os.environ["SPOTIFY_CLIENT_SECRET"]
+# --- Spotify scraping --------------------------------------------------------
 
-    r = requests.post(
-        "https://accounts.spotify.com/api/token",
-        data={"grant_type": "client_credentials"},
-        auth=(client_id, client_secret),
-        timeout=10,
-    )
+def fetch_artist_album_ids() -> set[str]:
+    """Scrape the public artist page and extract all album IDs."""
+    print(f"  fetching {ARTIST_URL}")
+    r = requests.get(ARTIST_URL, headers=HEADERS, timeout=15)
+    if not r.ok:
+        print(f"  ! HTTP {r.status_code}: {r.text[:300]}")
     r.raise_for_status()
-    return r.json()["access_token"]
+    # Spotify album IDs are 22-char base62 strings
+    ids = set(re.findall(r'/album/([a-zA-Z0-9]{22})', r.text))
+    print(f"  found {len(ids)} albums on artist page")
+    return ids
 
 
-def fetch_artist_catalog(token: str) -> list[dict]:
-    """Return all singles & albums of the artist, sorted newest first."""
-    headers = {"Authorization": f"Bearer {token}"}
-    items: list[dict] = []
-    url = (
-        f"https://api.spotify.com/v1/artists/{ARTIST_ID}/albums"
-        "?include_groups=single,album&limit=20"
-    )
-    while url:
-        r = requests.get(url, headers=headers, timeout=10)
-        if not r.ok:
-            print(f"  ! Spotify {r.status_code} on {url}")
-            print(f"  ! Response body: {r.text}")
-        r.raise_for_status()
-        data = r.json()
-        items.extend(data["items"])
-        url = data.get("next")
-
-    # Deduplicate by name (Spotify sometimes returns same album for multiple markets)
-    seen = set()
-    unique: list[dict] = []
-    for item in items:
-        key = item["name"].strip().lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        unique.append(item)
-
-    # Sort by release_date descending (newest first)
-    unique.sort(key=lambda x: x["release_date"], reverse=True)
-    return unique
-
-
-def fetch_album_details(token: str, album_id: str) -> dict:
-    """Get track listing — needed for duration."""
-    headers = {"Authorization": f"Bearer {token}"}
-    r = requests.get(
-        f"https://api.spotify.com/v1/albums/{album_id}",
-        headers=headers,
-        timeout=10,
-    )
+def fetch_album_details(album_id: str) -> dict:
+    """Scrape album page for title, date, duration, cover."""
+    url = ALBUM_URL_PREFIX + album_id
+    r = requests.get(url, headers=HEADERS, timeout=15)
+    if not r.ok:
+        print(f"  ! album {album_id}: HTTP {r.status_code}")
     r.raise_for_status()
-    return r.json()
+    html = r.text
 
+    # og:title looks like: "The lost - Single by SW..LION | Spotify"
+    m = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
+    full_title = m.group(1) if m else f"Unknown ({album_id})"
+    title = re.sub(
+        r'\s*[-–—]\s*(Single|EP|Album)\s+by\s+.+$',
+        '',
+        full_title,
+    ).strip()
 
-# --- Data normalization ------------------------------------------------------
-
-def normalize_release(album: dict, full_album: dict) -> dict:
-    """Convert Spotify API response to our internal release format."""
-    # Pick the largest cover available
-    images = album.get("images", [])
-    cover_large = images[0]["url"] if images else ""
-    # Spotify returns 640/300/64. We want the 300 version for the PWA list:
+    # og:image is the large 640px cover
+    m = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\'](https://i\.scdn\.co/image/[a-z0-9]+)["\']', html)
+    cover_large = m.group(1) if m else ""
+    # Spotify cover URL pattern: ab67616d0000b273<hash> (640) → ab67616d00001e02<hash> (300)
     cover_small = cover_large.replace("ab67616d0000b273", "ab67616d00001e02")
 
-    # Duration of first track (all SW..LION releases are singles so far)
-    tracks = full_album.get("tracks", {}).get("items", [])
-    duration_ms = tracks[0]["duration_ms"] if tracks else 0
-    minutes = duration_ms // 60000
-    seconds = (duration_ms % 60000) // 1000
-    duration_str = f"{minutes}:{seconds:02d}"
+    # release_date as ISO YYYY-MM-DD
+    m = re.search(r'<meta[^>]+(?:name|property)=["\']music:release_date["\'][^>]+content=["\'](\d{4}-\d{2}-\d{2})["\']', html)
+    release_date = m.group(1) if m else None
+
+    # Duration: look for "X min Y sec" anywhere in HTML
+    m = re.search(r'(\d+)\s*min\s*(\d+)\s*sec', html)
+    if m:
+        duration = f"{int(m.group(1))}:{int(m.group(2)):02d}"
+    else:
+        duration = "0:00"
 
     return {
-        "id": album["id"],
-        "name": album["name"],
-        "release_date": album["release_date"],  # "YYYY-MM-DD"
-        "duration": duration_str,
+        "id": album_id,
+        "name": title,
+        "release_date": release_date or "0000-00-00",
+        "duration": duration,
         "cover_large": cover_large,
         "cover_small": cover_small,
-        "spotify_url": album["external_urls"]["spotify"],
+        "spotify_url": url,
     }
 
 
-# --- Telegram ---------------------------------------------------------------
+# --- Telegram ----------------------------------------------------------------
 
 def post_to_telegram(release: dict) -> None:
-    """Post new release announcement with cover photo and platform buttons."""
+    """Post release announcement with cover photo and platform buttons."""
     token = os.environ["TELEGRAM_BOT_TOKEN"]
 
-    # Format date nicely
-    iso = release["release_date"]
-    parsed = datetime.strptime(iso, "%Y-%m-%d").date()
+    parsed = datetime.strptime(release["release_date"], "%Y-%m-%d").date()
     date_str = parsed.strftime("%-d %B %Y") if sys.platform != "win32" else parsed.strftime("%d %B %Y")
 
-    # HTML caption — Telegram doesn't allow Markdown buttons in captions, so we
-    # use inline keyboard for platform links.
     caption = (
         f"🦁 <b>NEW RELEASE</b>\n\n"
         f"<b>{escape_html(release['name'])}</b>\n"
@@ -180,10 +153,10 @@ def post_to_telegram(release: dict) -> None:
             "parse_mode": "HTML",
             "reply_markup": keyboard,
         },
-        timeout=15,
+        timeout=20,
     )
     if not r.ok:
-        print(f"Telegram error: {r.status_code} {r.text}")
+        print(f"  ! Telegram {r.status_code}: {r.text}")
         r.raise_for_status()
     print(f"  → posted to {TELEGRAM_CHAT}")
 
@@ -194,13 +167,10 @@ def escape_html(s: str) -> str:
 
 # --- PWA HTML generation -----------------------------------------------------
 
-def render_release_card(release: dict, is_first: bool) -> str:
-    """Generate one .release card for the All Releases list."""
-    iso = release["release_date"]
-    parsed = datetime.strptime(iso, "%Y-%m-%d").date()
+def render_release_card(release: dict, is_debut: bool) -> str:
+    parsed = datetime.strptime(release["release_date"], "%Y-%m-%d").date()
     short_date = parsed.strftime("%b %-d") if sys.platform != "win32" else parsed.strftime("%b %d")
-
-    debut_marker = " · Debut" if is_first else ""
+    debut_marker = " · Debut" if is_debut else ""
 
     return f"""
     <div class="release">
@@ -222,9 +192,7 @@ def render_release_card(release: dict, is_first: bool) -> str:
 
 
 def render_hero(release: dict) -> str:
-    """Generate the Latest Release hero card."""
-    iso = release["release_date"]
-    parsed = datetime.strptime(iso, "%Y-%m-%d").date()
+    parsed = datetime.strptime(release["release_date"], "%Y-%m-%d").date()
     badge = parsed.strftime("%b %-d · %Y · NEW") if sys.platform != "win32" else parsed.strftime("%b %d · %Y · NEW")
 
     return f"""  <div class="section-label">Latest Release</div>
@@ -248,23 +216,23 @@ def render_hero(release: dict) -> str:
 
 
 def update_pwa_html(releases: list[dict]) -> None:
-    """Rewrite index.html with the current release list."""
     if not INDEX_FILE.exists():
         print("  ! index.html not found, skipping PWA update")
         return
 
     html = INDEX_FILE.read_text(encoding="utf-8")
 
-    # Update singles count in stats
     html = re.sub(
         r"<span><strong>\d+</strong> Singles</span>",
         f"<span><strong>{len(releases)}</strong> Singles</span>",
         html,
     )
 
-    # Replace hero + releases list (everything between <!--RELEASES_START--> and <!--RELEASES_END-->)
     hero_html = render_hero(releases[0])
-    list_html = "\n".join(render_release_card(r, i == len(releases) - 2) for i, r in enumerate(releases[1:]))
+    list_html = "\n".join(
+        render_release_card(r, i == len(releases) - 2)
+        for i, r in enumerate(releases[1:])
+    )
 
     new_block = f"""<!--RELEASES_START-->
 {hero_html}
@@ -283,7 +251,6 @@ def update_pwa_html(releases: list[dict]) -> None:
         flags=re.DOTALL,
     )
 
-    # Bump snapshot date
     today_str = date.today().strftime("%-d %b %Y") if sys.platform != "win32" else date.today().strftime("%d %b %Y")
     html = re.sub(
         r"<strong>Snapshot</strong>\s*·\s*[^<]+",
@@ -298,9 +265,9 @@ def update_pwa_html(releases: list[dict]) -> None:
 # --- Main --------------------------------------------------------------------
 
 def main() -> int:
-    print(f"[{datetime.utcnow().isoformat()}Z] Checking SW..LION catalog...")
+    now = datetime.now(timezone.utc).isoformat()
+    print(f"[{now}] Checking SW..LION catalog (HTML scraping mode)...")
 
-    # 1. Load known state
     if RELEASES_FILE.exists():
         known = json.loads(RELEASES_FILE.read_text(encoding="utf-8"))
         known_ids = {r["id"] for r in known.get("releases", [])}
@@ -309,57 +276,52 @@ def main() -> int:
         known_ids = set()
     print(f"  known: {len(known_ids)} releases")
 
-    # 2. Fetch current Spotify state
     try:
-        token = get_spotify_token()
-        catalog = fetch_artist_catalog(token)
+        spotify_ids = fetch_artist_album_ids()
     except Exception as e:
-        print(f"  ! Spotify API error: {e}")
+        print(f"  ! scrape failed: {e}")
         return 1
-    print(f"  spotify: {len(catalog)} releases")
 
-    # 3. Find new releases
-    new_albums = [a for a in catalog if a["id"] not in known_ids]
-    print(f"  new: {len(new_albums)}")
+    new_ids = spotify_ids - known_ids
+    print(f"  new: {len(new_ids)}")
 
-    if not new_albums:
+    if not new_ids:
         print("  nothing to do.")
         return 0
 
-    # 4. For each new release: enrich + post to Telegram
     new_releases = []
-    for album in new_albums:
-        print(f"  + {album['name']} ({album['release_date']})")
-        details = fetch_album_details(token, album["id"])
-        release = normalize_release(album, details)
-        new_releases.append(release)
+    for album_id in new_ids:
         try:
-            post_to_telegram(release)
+            details = fetch_album_details(album_id)
+        except Exception as e:
+            print(f"  ! failed details for {album_id}: {e}")
+            continue
+        print(f"  + {details['name']} ({details['release_date']})")
+        new_releases.append(details)
+        try:
+            post_to_telegram(details)
         except Exception as e:
             print(f"    ! Telegram post failed: {e}")
-            # Don't bail — still save state so we don't double-post next run
-            continue
+        time.sleep(1)  # be polite to Telegram + Spotify
 
-    # 5. Build the updated full catalog (newest first), persist it
-    all_releases = []
-    for album in catalog:
-        if album["id"] in known_ids:
-            existing = next(r for r in known["releases"] if r["id"] == album["id"])
-            all_releases.append(existing)
-        else:
-            details = fetch_album_details(token, album["id"])
-            all_releases.append(normalize_release(album, details))
+    if not new_releases:
+        print("  nothing posted, skipping state update.")
+        return 0
+
+    all_releases = known.get("releases", []) + new_releases
+    all_releases.sort(key=lambda r: r["release_date"], reverse=True)
 
     state = {
-        "updated_at": datetime.utcnow().isoformat() + "Z",
+        "updated_at": now,
         "releases": all_releases,
     }
-    RELEASES_FILE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"  → wrote releases.json")
+    RELEASES_FILE.write_text(
+        json.dumps(state, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    print(f"  → wrote releases.json ({len(all_releases)} releases)")
 
-    # 6. Regenerate index.html from full catalog
     update_pwa_html(all_releases)
-
     return 0
 
 
