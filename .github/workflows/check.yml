@@ -1,0 +1,46 @@
+name: Check SW..LION releases
+
+on:
+  # Run every hour at :07 (avoid the :00 rush on GitHub's cron infra)
+  schedule:
+    - cron: '7 * * * *'
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # so the workflow can commit changes back
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run agent
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python agent.py
+
+      - name: Commit changes if any
+        run: |
+          git config user.name  "swlion-agent"
+          git config user.email "agent@swlion.bot"
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add -A
+            git commit -m "auto: catalog update $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+            echo "✓ committed & pushed"
+          else
+            echo "✓ no changes"
+          fi
