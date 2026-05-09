@@ -1,0 +1,95 @@
+{
+  "updated_at": "2026-05-09T00:00:00Z",
+  "releases": [
+    {
+      "id": "6O2GOJ02pIeGbYnhuOKNUF",
+      "name": "The lost",
+      "release_date": "2026-05-07",
+      "duration": "3:32",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b27392b84edc05b88f50d17b36ef",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e0292b84edc05b88f50d17b36ef",
+      "spotify_url": "https://open.spotify.com/album/6O2GOJ02pIeGbYnhuOKNUF"
+    },
+    {
+      "id": "5mygsIoAl22IhMkst9Vcwt",
+      "name": "Aurelion",
+      "release_date": "2026-05-02",
+      "duration": "3:36",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b2735267011f7d0e680209b0aa83",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e025267011f7d0e680209b0aa83",
+      "spotify_url": "https://open.spotify.com/album/5mygsIoAl22IhMkst9Vcwt"
+    },
+    {
+      "id": "5n8BjCe1z71ZkEAXj8iZoT",
+      "name": "Зажигаем звезды",
+      "release_date": "2026-04-23",
+      "duration": "3:18",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b2738ea8d75449470380ece731dc",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e028ea8d75449470380ece731dc",
+      "spotify_url": "https://open.spotify.com/album/5n8BjCe1z71ZkEAXj8iZoT"
+    },
+    {
+      "id": "2KZDgsjnJ8Y8k10xzKhjgp",
+      "name": "Letter",
+      "release_date": "2026-04-22",
+      "duration": "3:28",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b2736a13a71ffe0822ed85338bd5",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e026a13a71ffe0822ed85338bd5",
+      "spotify_url": "https://open.spotify.com/album/2KZDgsjnJ8Y8k10xzKhjgp"
+    },
+    {
+      "id": "1NOxr2NpAxdT0vuRrtK0uY",
+      "name": "Письмо с нами",
+      "release_date": "2026-04-17",
+      "duration": "2:54",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b2738fd3dc99c49d44f319592094",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e028fd3dc99c49d44f319592094",
+      "spotify_url": "https://open.spotify.com/album/1NOxr2NpAxdT0vuRrtK0uY"
+    },
+    {
+      "id": "3CDFb2prKkQB648jOjpE6C",
+      "name": "Two Points on Map",
+      "release_date": "2026-04-07",
+      "duration": "3:54",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b273fa3f9a2db2f4b7e5c5e1ca12",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e02fa3f9a2db2f4b7e5c5e1ca12",
+      "spotify_url": "https://open.spotify.com/album/3CDFb2prKkQB648jOjpE6C"
+    },
+    {
+      "id": "3CSomkyK1K6N8RMFZ7FusA",
+      "name": "Mask of Fire",
+      "release_date": "2026-03-30",
+      "duration": "3:54",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b2737c0e616eca4ab3d3b885528c",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e027c0e616eca4ab3d3b885528c",
+      "spotify_url": "https://open.spotify.com/album/3CSomkyK1K6N8RMFZ7FusA"
+    },
+    {
+      "id": "2gwz1eB2AN79VdWqr56kRC",
+      "name": "В каждом слове гимн",
+      "release_date": "2026-03-25",
+      "duration": "3:19",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b273a4b3e0a3a1cecd502807749d",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e02a4b3e0a3a1cecd502807749d",
+      "spotify_url": "https://open.spotify.com/album/2gwz1eB2AN79VdWqr56kRC"
+    },
+    {
+      "id": "6Epm4XbXrsIdPRafQoWrzZ",
+      "name": "Don't Look Away",
+      "release_date": "2026-03-10",
+      "duration": "3:31",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b2735e13ebcfdbd8f165456d82cb",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e025e13ebcfdbd8f165456d82cb",
+      "spotify_url": "https://open.spotify.com/album/6Epm4XbXrsIdPRafQoWrzZ"
+    },
+    {
+      "id": "5FPV1SL6xFg0y2AdQJbpFP",
+      "name": "Не отводи свой взгляд",
+      "release_date": "2026-02-11",
+      "duration": "2:25",
+      "cover_large": "https://i.scdn.co/image/ab67616d0000b273ef535e1aeb73bdbc132848c4",
+      "cover_small": "https://i.scdn.co/image/ab67616d00001e02ef535e1aeb73bdbc132848c4",
+      "spotify_url": "https://open.spotify.com/album/5FPV1SL6xFg0y2AdQJbpFP"
+    }
+  ]
+}
