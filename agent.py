@@ -1,10 +1,10 @@
 """
-SW..LION Release Agent v2 (HTML scraping)
-==========================================
-Scrapes open.spotify.com directly instead of using the Web API.
-- No Spotify Developer App needed (no Client ID / Secret).
-- More resilient to API changes.
-- Same logic as v1: detect new albums, post to Telegram, update PWA.
+SW..LION Release Agent v3 (iTunes Search API)
+==============================================
+Uses Apple's free iTunes Search API as source of truth.
+- No auth, no API keys, no rate limits.
+- Matches against known releases by NAME (not ID), so it works
+  smoothly with the existing releases.json that has Spotify IDs.
 
 Required GitHub secret:
     TELEGRAM_BOT_TOKEN
@@ -22,9 +22,11 @@ import requests
 
 # --- Configuration -----------------------------------------------------------
 
-ARTIST_ID = "24zGJwyyCrVEqfvQKC8Act"
-ARTIST_URL = f"https://open.spotify.com/artist/{ARTIST_ID}"
-ALBUM_URL_PREFIX = "https://open.spotify.com/album/"
+ARTIST_NAME = "SW..LION"
+APPLE_ARTIST_ID = "1876097912"
+ITUNES_LOOKUP_URL = "https://itunes.apple.com/lookup"
+
+ARTIST_SPOTIFY_URL = "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act"
 TELEGRAM_CHAT = "@swlionofficial"
 
 REPO_ROOT = Path(__file__).parent
@@ -41,72 +43,71 @@ PROFILES = {
     "vk": "https://vk.ru/artist/6937135904079804585",
 }
 
-# Spotify rejects requests without a real-looking User-Agent
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.5",
-}
+
+# --- iTunes API --------------------------------------------------------------
+
+def normalize_name(raw: str) -> str:
+    """Strip ' - Single', ' - EP', ' - Album' suffixes and lowercase."""
+    name = re.sub(r'\s*[-–—]\s*(Single|EP|Album)\s*$', '', raw, flags=re.IGNORECASE)
+    return name.strip()
 
 
-# --- Spotify scraping --------------------------------------------------------
-
-def fetch_artist_album_ids() -> set[str]:
-    """Scrape the public artist page and extract all album IDs."""
-    print(f"  fetching {ARTIST_URL}")
-    r = requests.get(ARTIST_URL, headers=HEADERS, timeout=15)
+def fetch_artist_albums() -> list[dict]:
+    """Get all albums of the artist via iTunes Search API."""
+    print(f"  fetching iTunes lookup for artist {APPLE_ARTIST_ID}")
+    r = requests.get(
+        ITUNES_LOOKUP_URL,
+        params={
+            "id": APPLE_ARTIST_ID,
+            "entity": "album",
+            "limit": 200,
+        },
+        timeout=15,
+    )
     if not r.ok:
         print(f"  ! HTTP {r.status_code}: {r.text[:300]}")
     r.raise_for_status()
-    # Spotify album IDs are 22-char base62 strings
-    ids = set(re.findall(r'/album/([a-zA-Z0-9]{22})', r.text))
-    print(f"  found {len(ids)} albums on artist page")
-    return ids
+    data = r.json()
+    albums = [it for it in data.get("results", []) if it.get("wrapperType") == "collection"]
+    print(f"  found {len(albums)} albums on iTunes")
+    return albums
 
 
-def fetch_album_details(album_id: str) -> dict:
-    """Scrape album page for title, date, duration, cover."""
-    url = ALBUM_URL_PREFIX + album_id
-    r = requests.get(url, headers=HEADERS, timeout=15)
-    if not r.ok:
-        print(f"  ! album {album_id}: HTTP {r.status_code}")
+def fetch_album_duration(collection_id: int) -> str:
+    """Get duration of the first track via iTunes track lookup."""
+    r = requests.get(
+        ITUNES_LOOKUP_URL,
+        params={"id": collection_id, "entity": "song", "limit": 50},
+        timeout=15,
+    )
     r.raise_for_status()
-    html = r.text
+    tracks = [it for it in r.json().get("results", []) if it.get("wrapperType") == "track"]
+    if not tracks:
+        return "0:00"
+    ms = tracks[0].get("trackTimeMillis", 0)
+    return f"{ms // 60000}:{(ms % 60000) // 1000:02d}"
 
-    # og:title looks like: "The lost - Single by SW..LION | Spotify"
-    m = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
-    full_title = m.group(1) if m else f"Unknown ({album_id})"
-    title = re.sub(
-        r'\s*[-–—]\s*(Single|EP|Album)\s+by\s+.+$',
-        '',
-        full_title,
-    ).strip()
 
-    # og:image is the large 640px cover
-    m = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\'](https://i\.scdn\.co/image/[a-z0-9]+)["\']', html)
-    cover_large = m.group(1) if m else ""
-    # Spotify cover URL pattern: ab67616d0000b273<hash> (640) → ab67616d00001e02<hash> (300)
-    cover_small = cover_large.replace("ab67616d0000b273", "ab67616d00001e02")
+def normalize_release(album: dict, duration: str) -> dict:
+    """Build our internal release dict from iTunes album object."""
+    name = normalize_name(album["collectionName"])
+    iso_date = album["releaseDate"][:10]  # "2026-05-07T07:00:00Z" → "2026-05-07"
 
-    # release_date as ISO YYYY-MM-DD
-    m = re.search(r'<meta[^>]+(?:name|property)=["\']music:release_date["\'][^>]+content=["\'](\d{4}-\d{2}-\d{2})["\']', html)
-    release_date = m.group(1) if m else None
-
-    # Duration: look for "X min Y sec" anywhere in HTML
-    m = re.search(r'(\d+)\s*min\s*(\d+)\s*sec', html)
-    if m:
-        duration = f"{int(m.group(1))}:{int(m.group(2)):02d}"
-    else:
-        duration = "0:00"
+    # Apple gives 100x100 by default; replace with high-res variants
+    art100 = album.get("artworkUrl100", "")
+    cover_large = art100.replace("100x100bb.jpg", "1000x1000bb.jpg")
+    cover_small = art100.replace("100x100bb.jpg", "300x300bb.jpg")
 
     return {
-        "id": album_id,
-        "name": title,
-        "release_date": release_date or "0000-00-00",
+        "id": str(album["collectionId"]),
+        "name": name,
+        "release_date": iso_date,
         "duration": duration,
         "cover_large": cover_large,
         "cover_small": cover_small,
-        "spotify_url": url,
+        # For new releases we don't know the Spotify album ID, so link to artist profile
+        "spotify_url": ARTIST_SPOTIFY_URL,
+        "apple_url": album.get("collectionViewUrl", PROFILES["apple"]),
     }
 
 
@@ -126,11 +127,14 @@ def post_to_telegram(release: dict) -> None:
         f"<i>{date_str}</i>"
     )
 
+    apple_url = release.get("apple_url", PROFILES["apple"])
+    spotify_url = release.get("spotify_url", PROFILES["spotify"])
+
     keyboard = {
         "inline_keyboard": [
             [
-                {"text": "Spotify", "url": release["spotify_url"]},
-                {"text": "Apple Music", "url": PROFILES["apple"]},
+                {"text": "Spotify", "url": spotify_url},
+                {"text": "Apple Music", "url": apple_url},
                 {"text": "YouTube Music", "url": PROFILES["youtube"]},
             ],
             [
@@ -179,8 +183,8 @@ def render_release_card(release: dict, is_debut: bool) -> str:
         <div class="release-title">{escape_html(release['name'])}</div>
         <div class="release-meta">{short_date} · {release['duration']}{debut_marker}</div>
         <div class="platforms">
-          <a class="pill" href="{release['spotify_url']}">SP</a>
-          <a class="pill" href="{PROFILES['apple']}">AM</a>
+          <a class="pill" href="{release.get('spotify_url', PROFILES['spotify'])}">SP</a>
+          <a class="pill" href="{release.get('apple_url', PROFILES['apple'])}">AM</a>
           <a class="pill" href="{PROFILES['youtube']}">YT</a>
           <a class="pill" href="{PROFILES['deezer']}">DZ</a>
           <a class="pill" href="{PROFILES['tidal']}">TD</a>
@@ -203,8 +207,8 @@ def render_hero(release: dict) -> str:
       <h2 class="latest-title">{escape_html(release['name'])}</h2>
       <div class="latest-meta">Single · {release['duration']}</div>
       <div class="platforms">
-        <a class="pill" href="{release['spotify_url']}">SP</a>
-        <a class="pill" href="{PROFILES['apple']}">AM</a>
+        <a class="pill" href="{release.get('spotify_url', PROFILES['spotify'])}">SP</a>
+        <a class="pill" href="{release.get('apple_url', PROFILES['apple'])}">AM</a>
         <a class="pill" href="{PROFILES['youtube']}">YT</a>
         <a class="pill" href="{PROFILES['deezer']}">DZ</a>
         <a class="pill" href="{PROFILES['tidal']}">TD</a>
@@ -266,43 +270,51 @@ def update_pwa_html(releases: list[dict]) -> None:
 
 def main() -> int:
     now = datetime.now(timezone.utc).isoformat()
-    print(f"[{now}] Checking SW..LION catalog (HTML scraping mode)...")
+    print(f"[{now}] Checking SW..LION catalog (iTunes API mode)...")
 
     if RELEASES_FILE.exists():
         known = json.loads(RELEASES_FILE.read_text(encoding="utf-8"))
-        known_ids = {r["id"] for r in known.get("releases", [])}
+        # Match by NAME (case-insensitive, stripped) — works across Spotify/Apple/whatever IDs
+        known_names = {r["name"].strip().lower() for r in known.get("releases", [])}
     else:
         known = {"releases": []}
-        known_ids = set()
-    print(f"  known: {len(known_ids)} releases")
+        known_names = set()
+    print(f"  known: {len(known_names)} releases")
 
     try:
-        spotify_ids = fetch_artist_album_ids()
+        itunes_albums = fetch_artist_albums()
     except Exception as e:
-        print(f"  ! scrape failed: {e}")
+        print(f"  ! iTunes fetch failed: {e}")
         return 1
 
-    new_ids = spotify_ids - known_ids
-    print(f"  new: {len(new_ids)}")
+    new_albums = [
+        a for a in itunes_albums
+        if normalize_name(a["collectionName"]).lower() not in known_names
+    ]
+    print(f"  new: {len(new_albums)}")
 
-    if not new_ids:
+    if not new_albums:
         print("  nothing to do.")
         return 0
 
     new_releases = []
-    for album_id in new_ids:
+    for album in new_albums:
         try:
-            details = fetch_album_details(album_id)
+            duration = fetch_album_duration(album["collectionId"])
         except Exception as e:
-            print(f"  ! failed details for {album_id}: {e}")
-            continue
-        print(f"  + {details['name']} ({details['release_date']})")
-        new_releases.append(details)
+            print(f"  ! duration fetch failed for {album['collectionName']}: {e}")
+            duration = "0:00"
+
+        release = normalize_release(album, duration)
+        print(f"  + {release['name']} ({release['release_date']}, {release['duration']})")
+        new_releases.append(release)
+
         try:
-            post_to_telegram(details)
+            post_to_telegram(release)
         except Exception as e:
             print(f"    ! Telegram post failed: {e}")
-        time.sleep(1)  # be polite to Telegram + Spotify
+
+        time.sleep(1)  # polite gap between posts
 
     if not new_releases:
         print("  nothing posted, skipping state update.")
