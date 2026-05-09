@@ -65,8 +65,10 @@ def fetch_artist_catalog(token: str) -> list[dict]:
     headers = {"Authorization": f"Bearer {token}"}
     items: list[dict] = []
     url = (
-        f"https://api.spotify.com/v1/artists/{ARTIST_ID}/albums"
-        "?include_groups=single,album&market=US&limit=50"
+        url = (
+    f"https://api.spotify.com/v1/artists/{ARTIST_ID}/albums"
+    "?include_groups=single,album&limit=50"
+)
     )
     while url:
         r = requests.get(url, headers=headers, timeout=10)
@@ -94,7 +96,7 @@ def fetch_album_details(token: str, album_id: str) -> dict:
     """Get track listing — needed for duration."""
     headers = {"Authorization": f"Bearer {token}"}
     r = requests.get(
-        f"https://api.spotify.com/v1/albums/{album_id}?market=US",
+        f"https://api.spotify.com/v1/albums/{album_id}",
         headers=headers,
         timeout=10,
     )
