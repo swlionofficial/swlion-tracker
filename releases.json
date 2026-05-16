@@ -1,7 +1,16 @@
 {
-  "updated_at": "2026-05-09T00:00:00Z",
+  "updated_at": "2026-05-16T00:08:04.037254+00:00",
   "releases": [
-   
+    {
+      "id": "6769400761",
+      "name": "The lost",
+      "release_date": "2026-05-07",
+      "duration": "3:32",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/68/85/9f/68859f89-5d6d-9ea2-9ebb-3fa763c09518/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/68/85/9f/68859f89-5d6d-9ea2-9ebb-3fa763c09518/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/the-lost-single/6769400761?uo=4"
+    },
     {
       "id": "5mygsIoAl22IhMkst9Vcwt",
       "name": "Aurelion",
