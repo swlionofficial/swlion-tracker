@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-05-16T00:08:04.037254+00:00",
+  "updated_at": "2026-05-18T12:53:10.412081+00:00",
   "releases": [
+    {
+      "id": "6770405448",
+      "name": "Kingdoms of glass",
+      "release_date": "2026-05-11",
+      "duration": "3:39",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/61/35/94/613594d3-121e-62b7-fae0-6d08d94fd2b5/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/61/35/94/613594d3-121e-62b7-fae0-6d08d94fd2b5/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/kingdoms-of-glass-single/6770405448?uo=4"
+    },
     {
       "id": "6769400761",
       "name": "The lost",
