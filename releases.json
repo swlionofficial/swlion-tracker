@@ -1,6 +1,26 @@
 {
-  "updated_at": "2026-05-18T12:53:10.412081+00:00",
+  "updated_at": "2026-06-01T19:25:07.290906+00:00",
   "releases": [
+    {
+      "id": "6775330086",
+      "name": "Тот взгляд",
+      "release_date": "2026-05-25",
+      "duration": "3:43",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/61/44/01/614401c8-ac79-d768-8cc8-83fe4002a80f/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/61/44/01/614401c8-ac79-d768-8cc8-83fe4002a80f/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D1%82%D0%BE%D1%82-%D0%B2%D0%B7%D0%B3%D0%BB%D1%8F%D0%B4-single/6775330086?uo=4"
+    },
+    {
+      "id": "6775330248",
+      "name": "Look away",
+      "release_date": "2026-05-25",
+      "duration": "3:23",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ba/34/a5/ba34a5aa-ebf0-35a5-fb0f-ce20f58a493c/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ba/34/a5/ba34a5aa-ebf0-35a5-fb0f-ce20f58a493c/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/look-away-single/6775330248?uo=4"
+    },
     {
       "id": "6770405448",
       "name": "Kingdoms of glass",
