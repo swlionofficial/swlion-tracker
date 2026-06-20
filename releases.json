@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-06-10T04:38:30.167915+00:00",
+  "updated_at": "2026-06-20T14:23:25.118569+00:00",
   "releases": [
+    {
+      "id": "6782282095",
+      "name": "Преломления",
+      "release_date": "2026-06-13",
+      "duration": "3:28",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/05/51/74/0551740c-214d-6886-301a-e5db0e0975f3/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/05/51/74/0551740c-214d-6886-301a-e5db0e0975f3/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D0%BF%D1%80%D0%B5%D0%BB%D0%BE%D0%BC%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-single/6782282095?uo=4"
+    },
     {
       "id": "6778664408",
       "name": "Don't look away (Aurelion)",
