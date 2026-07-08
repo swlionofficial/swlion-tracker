@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-07-07T15:07:11.966692+00:00",
+  "updated_at": "2026-07-08T22:13:27.351814+00:00",
   "releases": [
+    {
+      "id": "6788734720",
+      "name": "Alone with the Clouds",
+      "release_date": "2026-07-01",
+      "duration": "3:34",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/dd/a9/41/dda941cd-b797-c505-e9ae-189e4a1efeee/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/dd/a9/41/dda941cd-b797-c505-e9ae-189e4a1efeee/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/alone-with-the-clouds-single/6788734720?uo=4"
+    },
     {
       "id": "6788315052",
       "name": "Наедине с облаками",
