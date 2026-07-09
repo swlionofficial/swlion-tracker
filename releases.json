@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-07-08T22:13:27.351814+00:00",
+  "updated_at": "2026-07-09T12:17:32.139149+00:00",
   "releases": [
+    {
+      "id": "6788980838",
+      "name": "In the Light",
+      "release_date": "2026-07-02",
+      "duration": "3:33",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/4d/6a/ae/4d6aae28-2c26-549f-629d-ec7eaaa68c9c/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/4d/6a/ae/4d6aae28-2c26-549f-629d-ec7eaaa68c9c/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/in-the-light-single/6788980838?uo=4"
+    },
     {
       "id": "6788734720",
       "name": "Alone with the Clouds",
