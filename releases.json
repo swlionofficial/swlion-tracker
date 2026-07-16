@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-07-09T12:17:32.139149+00:00",
+  "updated_at": "2026-07-16T16:24:05.400671+00:00",
   "releases": [
+    {
+      "id": "6791609403",
+      "name": "Ночной перрон",
+      "release_date": "2026-07-09",
+      "duration": "3:02",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b9/c8/b5/b9c8b574-30b6-e86c-fb0d-5feefdd449af/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b9/c8/b5/b9c8b574-30b6-e86c-fb0d-5feefdd449af/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D0%BD%D0%BE%D1%87%D0%BD%D0%BE%D0%B9-%D0%BF%D0%B5%D1%80%D1%80%D0%BE%D0%BD-single/6791609403?uo=4"
+    },
     {
       "id": "6788980838",
       "name": "In the Light",
