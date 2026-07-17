@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-07-16T16:24:05.400671+00:00",
+  "updated_at": "2026-07-17T07:23:45.199635+00:00",
   "releases": [
+    {
+      "id": "6791862907",
+      "name": "It's Only Us",
+      "release_date": "2026-07-10",
+      "duration": "2:49",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/58/5e/bc585ed5-addb-3b6b-490c-42421cb0da4d/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/58/5e/bc585ed5-addb-3b6b-490c-42421cb0da4d/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/its-only-us-single/6791862907?uo=4"
+    },
     {
       "id": "6791609403",
       "name": "Ночной перрон",
