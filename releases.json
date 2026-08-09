@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-08-02T06:39:57.403312+00:00",
+  "updated_at": "2026-08-09T05:52:00.551135+00:00",
   "releases": [
+    {
+      "id": "6799592837",
+      "name": "Your Flame in My Design",
+      "release_date": "2026-08-02",
+      "duration": "3:40",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/b1/a6/f4/b1a6f4f8-9253-b689-9fac-43ba31788d62/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/b1/a6/f4/b1a6f4f8-9253-b689-9fac-43ba31788d62/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/your-flame-in-my-design-single/6799592837?uo=4"
+    },
     {
       "id": "6797151557",
       "name": "Не дай тишине",
