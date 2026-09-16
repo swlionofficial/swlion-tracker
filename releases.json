@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-09-14T16:54:55.488927+00:00",
+  "updated_at": "2026-09-16T11:21:33.596631+00:00",
   "releases": [
+    {
+      "id": "6812657496",
+      "name": "Ложный путь",
+      "release_date": "2026-09-09",
+      "duration": "3:24",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/fa/47/9b/fa479bf1-3b50-7dcb-d608-5da3d19e60a4/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/fa/47/9b/fa479bf1-3b50-7dcb-d608-5da3d19e60a4/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D0%BB%D0%BE%D0%B6%D0%BD%D1%8B%D0%B9-%D0%BF%D1%83%D1%82%D1%8C-single/6812657496?uo=4"
+    },
     {
       "id": "6811806349",
       "name": "На нас или без нас",
