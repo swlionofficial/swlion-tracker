@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-09-25T07:36:42.524818+00:00",
+  "updated_at": "2026-09-29T01:44:44.599563+00:00",
   "releases": [
+    {
+      "id": "6816876537",
+      "name": "Only Till Morning",
+      "release_date": "2026-09-21",
+      "duration": "3:36",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/5b/6a/ae/5b6aae6d-846b-096f-0f87-928a72b17494/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/5b/6a/ae/5b6aae6d-846b-096f-0f87-928a72b17494/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/only-till-morning-single/6816876537?uo=4"
+    },
     {
       "id": "6815895589",
       "name": "Puppet or Puppeteer",
