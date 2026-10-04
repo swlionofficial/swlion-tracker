@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-10-03T17:09:55.796628+00:00",
+  "updated_at": "2026-10-04T17:26:00.313267+00:00",
   "releases": [
+    {
+      "id": "6818946576",
+      "name": "С дыханьем ветра",
+      "release_date": "2026-09-27",
+      "duration": "3:32",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/45/f5/5f/45f55f8c-772a-bdab-d27d-5d5879da6a1e/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/45/f5/5f/45f55f8c-772a-bdab-d27d-5d5879da6a1e/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D1%81-%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D1%8C%D0%B5%D0%BC-%D0%B2%D0%B5%D1%82%D1%80%D0%B0-single/6818946576?uo=4"
+    },
     {
       "id": "6818705397",
       "name": "Всегда быть рядом",
