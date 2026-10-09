@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-10-04T17:26:00.313267+00:00",
+  "updated_at": "2026-10-09T08:50:37.917819+00:00",
   "releases": [
+    {
+      "id": "6820834090",
+      "name": "On the Breath of Wind",
+      "release_date": "2026-10-02",
+      "duration": "3:40",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/cb/4d/50/cb4d509f-6c3e-47b8-bec3-f605dd7d0df2/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/cb/4d/50/cb4d509f-6c3e-47b8-bec3-f605dd7d0df2/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/on-the-breath-of-wind-single/6820834090?uo=4"
+    },
     {
       "id": "6818946576",
       "name": "С дыханьем ветра",
