@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-10-09T08:50:37.917819+00:00",
+  "updated_at": "2026-10-10T13:30:59.576628+00:00",
   "releases": [
+    {
+      "id": "6821338986",
+      "name": "On The Breath Of Wind (Orchestral)",
+      "release_date": "2026-10-03",
+      "duration": "3:58",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7a/f4/0e/7af40ee9-bbe8-9b70-5c51-616b7240f039/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7a/f4/0e/7af40ee9-bbe8-9b70-5c51-616b7240f039/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/on-the-breath-of-wind-orchestral-single/6821338986?uo=4"
+    },
     {
       "id": "6820834090",
       "name": "On the Breath of Wind",
