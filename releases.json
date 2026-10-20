@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-20T09:55:50.128329+00:00",
+  "updated_at": "2026-10-20T19:07:16.815466+00:00",
   "releases": [
     {
       "id": "6824725000",
@@ -10,6 +10,16 @@
       "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/75/53/22/7553227c-64f7-eed2-ee5d-748f7066dd38/cover.jpg/300x300bb.jpg",
       "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
       "apple_url": "https://music.apple.com/us/album/%D0%BB%D0%B0%D0%B1%D0%B8%D1%80%D0%B8%D0%BD%D1%82-single/6824725000?uo=4"
+    },
+    {
+      "id": "6824970355",
+      "name": "Эдипова правда",
+      "release_date": "2026-10-13",
+      "duration": "3:47",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e7/96/ee/e796ee33-7721-28ed-ef88-a368ef9cc20a/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e7/96/ee/e796ee33-7721-28ed-ef88-a368ef9cc20a/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D1%8D%D0%B4%D0%B8%D0%BF%D0%BE%D0%B2%D0%B0-%D0%BF%D1%80%D0%B0%D0%B2%D0%B4%D0%B0-single/6824970355?uo=4"
     },
     {
       "id": "6821552146",
