@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-10-24T05:38:12.896117+00:00",
+  "updated_at": "2026-11-06T06:19:16.936541+00:00",
   "releases": [
+    {
+      "id": "6831467279",
+      "name": "Не выпускай из рук",
+      "release_date": "2026-10-21",
+      "duration": "3:42",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/81/74/e5/8174e5b3-eefc-d7ed-5085-dc1e3c5de0f2/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/81/74/e5/8174e5b3-eefc-d7ed-5085-dc1e3c5de0f2/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D0%BD%D0%B5-%D0%B2%D1%8B%D0%BF%D1%83%D1%81%D0%BA%D0%B0%D0%B9-%D0%B8%D0%B7-%D1%80%D1%83%D0%BA-single/6831467279?uo=4"
+    },
     {
       "id": "6826496419",
       "name": "HIS MAJESTY NUMBER TWO",
