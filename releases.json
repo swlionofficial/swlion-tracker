@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-06T14:55:21.114736+00:00",
+  "updated_at": "2026-11-07T22:37:59.205153+00:00",
   "releases": [
     {
       "id": "6831590795",
@@ -10,6 +10,16 @@
       "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/1e/8e/c0/1e8ec0b2-28f5-01f1-a1c9-f18a8c411bf9/cover.jpg/300x300bb.jpg",
       "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
       "apple_url": "https://music.apple.com/us/album/crownexe-single/6831590795?uo=4"
+    },
+    {
+      "id": "6831989231",
+      "name": "Чужая корона",
+      "release_date": "2026-10-31",
+      "duration": "3:53",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/87/f3/ed/87f3ed37-9d29-7ce5-700d-727207a3d099/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/87/f3/ed/87f3ed37-9d29-7ce5-700d-727207a3d099/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/%D1%87%D1%83%D0%B6%D0%B0%D1%8F-%D0%BA%D0%BE%D1%80%D0%BE%D0%BD%D0%B0-single/6831989231?uo=4"
     },
     {
       "id": "6831467279",
