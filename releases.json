@@ -1,6 +1,16 @@
 {
-  "updated_at": "2026-11-17T21:39:47.019477+00:00",
+  "updated_at": "2026-11-23T21:09:48.753541+00:00",
   "releases": [
+    {
+      "id": "6838166987",
+      "name": "Let Go and Move On",
+      "release_date": "2026-11-23",
+      "duration": "3:37",
+      "cover_large": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/40/e8/43/40e8438d-ae11-f4d0-bd94-ecfd8ec92fcc/cover.jpg/1000x1000bb.jpg",
+      "cover_small": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/40/e8/43/40e8438d-ae11-f4d0-bd94-ecfd8ec92fcc/cover.jpg/300x300bb.jpg",
+      "spotify_url": "https://open.spotify.com/artist/24zGJwyyCrVEqfvQKC8Act",
+      "apple_url": "https://music.apple.com/us/album/let-go-and-move-on-single/6838166987?uo=4"
+    },
     {
       "id": "6835944131",
       "name": "Времена года",
